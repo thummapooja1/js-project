@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meditation App</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+    background-color: #f0f8ff;
+    color: #333;
+    font-family: Arial, sans-serif;
+}
+
+h1, h2 {
+    color: #4682b4;
+}
+
+.circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #4682b4;
+    margin: 0 auto;
+    transition: all 4s ease-in-out;
+}
+
+.content-section {
+    display: none;
+}
+
+.btn-lg {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+#binaural .form-group,
+#relaxing .form-group {
+    margin: 20px 0;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container text-center">
+        <h1 class="my-4">Meditation App</h1>
+        <div class="row">
+            <div class="col-md-4">
+                <button class="btn btn-primary btn-lg" onclick="showSection('breathing')">Breathing Exercises</button>
+            </div>
+            <div class="col-md-4">
+                <button class="btn btn-success btn-lg" onclick="showSection('relaxing')">Relaxing Sounds</button>
+            </div>
+            <div class="col-md-4">
+                <button class="btn btn-info btn-lg" onclick="showSection('binaural')">Binaural Sounds</button>
+            </div>
+        </div>
+
+        <div id="breathing" class="content-section mt-5" style="display:none;">
+            <h2>Breathing Exercises</h2>
+            <p>Follow the visual guide to relax and reduce stress.</p>
+            <div id="breathing-circle" class="circle"></div>
+            <div class="mt-3">
+                <button class="btn btn-outline-primary" onclick="startBreathing()">Start</button>
+                <button class="btn btn-outline-secondary" onclick="stopBreathing()">Stop</button>
+            </div>
+        </div>
+
+        <div id="relaxing" class="content-section mt-5" style="display:none;">
+            <h2>Relaxing Sounds</h2>
+            <p>Choose a relaxing sound to play.</p>
+            <div class="form-group">
+                <label for="soundSelect">Choose Sound:</label>
+                <select class="form-control" id="soundSelect">
+                    <option value="rain">Rain</option>
+                    <option value="forest">Forest</option>
+                    <option value="waves">Waves</option>
+                    <option value="white_noise">White Noise</option>
+                </select>
+            </div>
+            <div class="mt-3">
+                <button class="btn btn-outline-primary" onclick="playSound()">Play</button>
+                <button class="btn btn-outline-secondary" onclick="stopSound()">Stop</button>
+            </div>
+            <audio id="relaxingAudio" loop></audio>
+        </div>
+
+        <div id="binaural" class="content-section mt-5" style="display:none;">
+            <h2>Binaural Sounds</h2>
+            <p>Select a binaural sound frequency.</p>
+            <div class="form-group">
+                <label for="frequencySelect">Choose Frequency:</label>
+                <select class="form-control" id="frequencySelect">
+                    <option value="alpha">Alpha (8-13 Hz) - Relaxation</option>
+                    <option value="beta">Beta (13-30 Hz) - Alertness</option>
+                    <option value="delta">Delta (0.5-4 Hz) - Deep Sleep</option>
+                    <option value="theta">Theta (4-8 Hz) - Meditation</option>
+                </select>
+            </div>
+            <div class="mt-3">
+                <button class="btn btn-outline-primary" onclick="playBinaural()">Play</button>
+                <button class="btn btn-outline-secondary" onclick="stopBinaural()">Stop</button>
+            </div>
+            <audio id="binauralAudio" loop></audio>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+   
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <script>
+        function showSection(section) {
+    document.querySelectorAll('.content-section').forEach(el => el.style.display = 'none');
+    document.getElementById(section).style.display = 'block';
+}
+
+let breathingInterval;
+
+function startBreathing() {
+    const circle = document.getElementById('breathing-circle');
+    circle.style.width = '200px';
+    circle.style.height = '200px';
+
+    breathingInterval = setInterval(() => {
+        if (circle.style.width === '100px') {
+            circle.style.width = '200px';
+            circle.style.height = '200px';
+        } else {
+            circle.style.width = '100px';
+            circle.style.height = '100px';
+        }
+    }, 8000);
+}
+
+function stopBreathing() {
+    clearInterval(breathingInterval);
+    const circle = document.getElementById('breathing-circle');
+    circle.style.width = '100px';
+    circle.style.height = '100px';
+}
+
+const sounds = {
+    rain: 'rain-110508.mp3',
+    forest: 'forest-163012.mp3',
+    waves: 'ocean-waves-112906.mp3',
+    white_noise: 'pwhite-noise-179828.mp3'
+};
+
+function playSound() {
+    const selectedSound = document.getElementById('soundSelect').value;
+    const audioElement = document.getElementById('relaxingAudio');
+    audioElement.src = sounds[selectedSound];
+    audioElement.play();
+}
+
+function stopSound() {
+    const audioElement = document.getElementById('relaxingAudio');
+    audioElement.pause();
+    audioElement.currentTime = 0;
+}
+
+const frequencies = {
+    alpha: 'path_to_alpha_sound.mp3',
+    beta: 'path_to_beta_sound.mp3',
+    delta: 'path_to_delta_sound.mp3',
+    theta: 'path_to_theta_sound.mp3'
+};
+
+function playBinaural() {
+    const selectedFrequency = document.getElementById('frequencySelect').value;
+    const audioElement = document.getElementById('binauralAudio');
+    audioElement.src = frequencies[selectedFrequency];
+    audioElement.play();
+}
+
+
+    </script>
+</body>
+</html>
